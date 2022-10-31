@@ -13,7 +13,7 @@ const App = () => {
     <Provider store={store}>
     <NavigationContainer>
       <Stack.Navigator>
-        <Stack.Screen name='LiigaApp'  component={EtuSivu} />
+        <Stack.Screen name='LiigaApp - Etusivu'  component={EtuSivu} />
       </Stack.Navigator>
     </NavigationContainer>
     </Provider>
