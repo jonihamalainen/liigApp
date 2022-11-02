@@ -6,10 +6,6 @@ import { useSelector } from 'react-redux';
 import { RootState } from '../redux/store';
 
  const PeliSivu : React.FC = () : React.ReactElement => {
-  
-    const video = React.useRef(null);
-
-    const [status, setStatus] = React.useState({});
 
     const route = useRoute();
 
@@ -19,12 +15,39 @@ import { RootState } from '../redux/store';
 
     const pelit = useSelector((state : RootState) => state.pelit.pelit);
 
+    const maalit : any[] = [];
+
+  if(pelit[yksiPeliId - 1].homeTeam.goals > 0) {
+
+    for(let i = 0; i < pelit[yksiPeliId - 1].homeTeam.goalEvents.length; i++) {
+    
+      maalit.push(pelit[yksiPeliId  - 1].homeTeam.goalEvents[i])
+        
+    }
+
+  }
+
+  if(pelit[yksiPeliId - 1].awayTeam.goals > 0){
+
+    for(let i = 0; i < pelit[yksiPeliId - 1].awayTeam.goalEvents.length; i++) {
+    
+      maalit.push(pelit[yksiPeliId - 1].awayTeam.goalEvents[i])
+  
+    }
+
+  }
+
+  maalit.sort((a,b) => (a.gameTime > b.gameTime) ? 1 : - 1);
+
+  console.log(maalit);
+
   return (
   <>
     <View style={styles.container}>
 
       <Text
         variant="headlineLarge"
+        style={{marginTop: 15}}
       >
         {pelit[yksiPeliId - 1].homeTeam.teamName}
       </Text>
@@ -34,13 +57,10 @@ import { RootState } from '../redux/store';
       >
       {pelit[yksiPeliId - 1].homeTeam.goals}
       </Text>
-     
-    </View>
-
-    <View style={styles.container}>
 
       <Text
         variant="headlineLarge"
+        style={{marginTop: 25}}
       >
         {pelit[yksiPeliId - 1].awayTeam.teamName}
       </Text>
@@ -51,18 +71,19 @@ import { RootState } from '../redux/store';
         {pelit[yksiPeliId - 1].awayTeam.goals}
     </Text>
 
-    </View>
-
-    <View style={styles.container}>
-
-      <Text>
+      <Text
+        variant='headlineSmall'
+        style={{marginTop: 15}}
+      >
         Katsojamäärä:  {pelit[yksiPeliId - 1].spectators}
       </Text>
 
-      <Text>
+      <Text
+        style={{marginTop: 15}}
+      >
         Maalit:
       </Text>
-      
+
     </View>
 
     </>
@@ -75,25 +96,6 @@ const styles = StyleSheet.create({
       flex: 1,
       backgroundColor: '#fff',
       alignItems: 'center',
-      justifyContent: 'center',
-    },
-    container2: {
-      marginTop: 25,
-      flex: 1,
-      backgroundColor: '#fff',
-      alignItems: 'center',
-      justifyContent: 'center',
-    },
-    teksti: {
-        marginLeft : 5,
-        marginRight : 5
-    },
-    video : {
-      flex: 1,
-      alignSelf: 'stretch'
-    },
-    buttons:{
-      margin: 10
     }
   });
 
