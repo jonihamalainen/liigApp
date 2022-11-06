@@ -75,7 +75,7 @@ import DateTimePickerModal from "react-native-modal-datetime-picker";
         <Text
             style={styles.teksti}
         >
-            Klikkaa ottelua avataksesi ottelun tiedot
+            {paiva}
         </Text>
 
         <Button title="Avaa kalenteri" onPress={showDatePicker} />
@@ -86,7 +86,6 @@ import DateTimePickerModal from "react-native-modal-datetime-picker";
         onConfirm={handleConfirm}
         onCancel={hideDatePicker}
       />
-    
 
         <List.Section 
             title="Ottelut:"
@@ -173,6 +172,7 @@ const styles = StyleSheet.create({
       justifyContent: 'center',
     },
     teksti: {
+        marginTop: 5,
         marginLeft : 5,
         marginRight : 5
     },
