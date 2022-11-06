@@ -62,6 +62,10 @@ import DateTimePickerModal from "react-native-modal-datetime-picker";
           dispatch(haePelit());
     
         }
+
+        const interval = setInterval(() => {
+            dispatch(haePelit());
+          }, 120000);
     
         return () => { haettu.current = true}
     
