@@ -1,4 +1,4 @@
-import { View, StyleSheet, ScrollView, Text, Pressable } from 'react-native';
+import { View, StyleSheet, ScrollView, Text, Pressable, Button } from 'react-native';
 import * as React from 'react';
 import { StatusBar } from 'expo-status-bar';
 import { AppDispatch, RootState } from '../redux/store';
@@ -8,6 +8,7 @@ import { List } from 'react-native-paper';
 import moment from 'moment';
 import 'moment/locale/fi';
 import { useNavigation } from '@react-navigation/native';
+import DateTimePickerModal from "react-native-modal-datetime-picker";
 
  const PeliListaus : React.FC = () : React.ReactElement => {
 
@@ -19,8 +20,41 @@ import { useNavigation } from '@react-navigation/native';
 
     const pelit = useSelector((state : RootState) => state.pelit.pelit);
 
+    const [date, setDate] = React.useState(new Date());
+
+    const paivanPelit : any[] = [];
+
     moment.locale();
 
+    const [isDatePickerVisible, setDatePickerVisibility] = React.useState(false);
+
+    const showDatePicker = () => {
+      setDatePickerVisibility(true);
+    };
+  
+    const hideDatePicker = () => {
+      setDatePickerVisibility(false);
+    };
+  
+    const handleConfirm = (date: any) => {
+      setDate(date);
+      hideDatePicker();
+    };
+
+
+    let paiva : any = date.toLocaleDateString('fi-Fi');
+
+        for(let i = 0; i < pelit.length; i++) {
+
+            let pelinPaiva : any = new Date(pelit[i].start).toLocaleDateString('fi-Fi');
+
+            if(paiva === pelinPaiva )
+        
+            paivanPelit.push(pelit[i])
+            
+        }
+        
+      
     React.useEffect(() => {
 
         if(!haettu.current) {
@@ -44,9 +78,15 @@ import { useNavigation } from '@react-navigation/native';
             Klikkaa ottelua avataksesi ottelun tiedot
         </Text>
 
-        <Text>
-            tähän tulee pickeri
-        </Text>
+        <Button title="Avaa kalenteri" onPress={showDatePicker} />
+
+      <DateTimePickerModal
+        isVisible={isDatePickerVisible}
+        mode="date"
+        onConfirm={handleConfirm}
+        onCancel={hideDatePicker}
+      />
+    
 
         <List.Section 
             title="Ottelut:"
@@ -57,7 +97,9 @@ import { useNavigation } from '@react-navigation/native';
             style={{ marginBottom : 5, height : "85%"}}
         >
 
-        {pelit.map((peli : any) => (
+
+        {(paivanPelit.length > 0)
+        ? paivanPelit.map((peli : any) => (
             peli.ended && peli.started
                 ?<>
                     <Pressable
@@ -106,7 +148,11 @@ import { useNavigation } from '@react-navigation/native';
                 <Text>
                     Virhe ottelutiedoissa
                 </Text>
-            ))}
+            ))
+        :<Text>
+            Ei otteluita
+        </Text>
+        }
 
         </ScrollView>
 
@@ -129,7 +175,11 @@ const styles = StyleSheet.create({
     teksti: {
         marginLeft : 5,
         marginRight : 5
-    }
+    },
+    datePickerStyle: {
+        width: 200,
+        marginTop: 20,
+      },
   });
 
 export default PeliListaus;
