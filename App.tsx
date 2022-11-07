@@ -8,7 +8,7 @@ import PeliSivu from './src/screens/PeliSivu';
 
 const Stack = createNativeStackNavigator();
 
-const App = () => {
+const App : React.FC = () : React.ReactElement => {
   return (
     <Provider store={store}>
     <NavigationContainer>
