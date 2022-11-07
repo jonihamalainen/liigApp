@@ -102,7 +102,7 @@ import DateTimePickerModal from "react-native-modal-datetime-picker";
 
 
         {(paivanPelit.length > 0)
-        ? paivanPelit.map((peli : any) => (
+        ? paivanPelit.map((peli : any, idx : number) => (
             peli.ended && peli.started
                 ?<>
                     <Pressable
@@ -111,7 +111,7 @@ import DateTimePickerModal from "react-native-modal-datetime-picker";
                         })}
                     >
                         <List.Item
-                            key={peli.id}
+                            key={idx}
                             title={"Ottelu loppu"}
                             description={peli.homeTeam.teamName + " " + peli.homeTeam.goals + "\n" + peli.awayTeam.teamName + " " + peli.awayTeam.goals} 
                         />
@@ -125,7 +125,7 @@ import DateTimePickerModal from "react-native-modal-datetime-picker";
                         })}
                     >
                     <List.Item
-                        key={peli.id}
+                        key={idx}
                         titleNumberOfLines = {2}
                         titleStyle={{fontSize : 14}}
                         title={"Ottelu alkaa: " + "\n" + moment(peli.start).locale('fi').format('LLL')}
@@ -141,7 +141,7 @@ import DateTimePickerModal from "react-native-modal-datetime-picker";
                         })}
                     >
                 <List.Item
-                    key={peli.id}
+                    key={idx}
                     title={"Ottelu käynnissä"}
                     description={peli.homeTeam.teamName + " " + peli.homeTeam.goals + "\n" + peli.awayTeam.teamName + " " + peli.awayTeam.goals} 
                 />
