@@ -12,7 +12,9 @@ const App : React.FC = () : React.ReactElement => {
   return (
     <Provider store={store}>
     <NavigationContainer>
-      <Stack.Navigator>
+      <Stack.Navigator
+        initialRouteName='LiigaApp - Etusivu'
+      >
         <Stack.Screen name='LiigaApp - Etusivu'  component={EtuSivu} />
         <Stack.Screen name="LiigaApp - Ottelu" component={PeliSivu} />
       </Stack.Navigator>

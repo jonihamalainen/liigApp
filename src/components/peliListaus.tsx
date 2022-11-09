@@ -1,4 +1,4 @@
-import { View, StyleSheet, ScrollView, Text, Pressable, Button } from 'react-native';
+import { View, StyleSheet, ScrollView, Text, Pressable, Button, Platform } from 'react-native';
 import * as React from 'react';
 import { StatusBar } from 'expo-status-bar';
 import { AppDispatch, RootState } from '../redux/store';
@@ -8,7 +8,7 @@ import { List } from 'react-native-paper';
 import moment from 'moment';
 import 'moment/locale/fi';
 import { useNavigation } from '@react-navigation/native';
-import DateTimePickerModal from "react-native-modal-datetime-picker";
+import DateTimePicker from '@react-native-community/datetimepicker';
 
  const PeliListaus : React.FC = () : React.ReactElement => {
 
@@ -22,24 +22,22 @@ import DateTimePickerModal from "react-native-modal-datetime-picker";
 
     const [date, setDate] = React.useState(new Date());
 
+    const [show, setShow] = React.useState(false);
+
     const paivanPelit : any[] = [];
 
     moment.locale();
 
-    const [isDatePickerVisible, setDatePickerVisibility] = React.useState(false);
+    const onChange = (event: any, selectedDate: any) => {
+        const currentDate = selectedDate;
+        setShow(false);
+        setDate(currentDate);
+      };
 
-    const showDatePicker = () => {
-      setDatePickerVisibility(true);
-    };
-  
-    const hideDatePicker = () => {
-      setDatePickerVisibility(false);
-    };
-  
-    const handleConfirm = (date: any) => {
-      setDate(date);
-      hideDatePicker();
-    };
+      const showDatepicker = () => {
+        setShow(true);
+      };
+    
 
 
     let paiva : any = date.toLocaleDateString('fi-Fi');
@@ -82,14 +80,17 @@ import DateTimePickerModal from "react-native-modal-datetime-picker";
             {paiva}
         </Text>
 
-        <Button title="Avaa kalenteri" onPress={showDatePicker} />
+        <Button onPress={showDatepicker} title="Show date picker!" />
 
-      <DateTimePickerModal
-        isVisible={isDatePickerVisible}
-        mode="date"
-        onConfirm={handleConfirm}
-        onCancel={hideDatePicker}
-      />
+        {show && (
+        <DateTimePicker
+          testID="dateTimePicker"
+          value={date}
+          mode='date'
+          is24Hour={true}
+          onChange={onChange}
+        />
+      )}
 
         <List.Section 
             title="Ottelut:"
