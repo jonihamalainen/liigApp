@@ -80,7 +80,7 @@ import DateTimePicker from '@react-native-community/datetimepicker';
             {paiva}
         </Text>
 
-        <Button onPress={showDatepicker} title="Show date picker!" />
+        <Button onPress={showDatepicker} title="Avaa kalenteri!"/>
 
         {show && (
         <DateTimePicker
