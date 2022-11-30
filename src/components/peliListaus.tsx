@@ -9,6 +9,7 @@ import moment from 'moment';
 import 'moment/locale/fi';
 import { useNavigation } from '@react-navigation/native';
 import DateTimePicker from '@react-native-community/datetimepicker';
+import { haePeli } from '../redux/yksiPeliSlice';
 
  const PeliListaus : React.FC = () : React.ReactElement => {
 
@@ -38,6 +39,16 @@ import DateTimePicker from '@react-native-community/datetimepicker';
         setShow(true);
       };
     
+    
+    const peliHaku = (id : number) => {
+
+        navigation.navigate('LiigaApp - Ottelu', {
+            peliId : id
+        })
+
+        dispatch(haePeli(id.toString()));
+
+    }
 
 
     let paiva : any = date.toLocaleDateString('fi-Fi');
@@ -107,9 +118,7 @@ import DateTimePicker from '@react-native-community/datetimepicker';
             peli.ended && peli.started
                 ?<>
                     <Pressable
-                        onPress={() => navigation.navigate('LiigaApp - Ottelu', {
-                            peliId : peli.id
-                        })}
+                        onPress={() => peliHaku(peli.id)}
                     >
                         <List.Item
                             key={idx}
@@ -121,9 +130,7 @@ import DateTimePicker from '@react-native-community/datetimepicker';
                 : !peli.ended && !peli.started
                 ?<>
                  <Pressable
-                        onPress={() => navigation.navigate('LiigaApp - Ottelu', {
-                            peliId : peli.id
-                        })}
+                        onPress={() => peliHaku(peli.id)}
                     >
                     <List.Item
                         key={idx}
@@ -137,9 +144,7 @@ import DateTimePicker from '@react-native-community/datetimepicker';
                 : peli.started && !peli.ended
                 ? <>
                 <Pressable
-                        onPress={() => navigation.navigate('LiigaApp - Ottelu', {
-                            peliId : peli.id
-                        })}
+                        onPress={() => peliHaku(peli.id)}
                     >
                 <List.Item
                     key={idx}

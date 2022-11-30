@@ -1,166 +1,175 @@
 import * as React from 'react';
-import { View, StyleSheet, Image, SafeAreaView, FlatList, ScrollView, Linking} from 'react-native';
+import { View, StyleSheet, Image, FlatList, ScrollView, Linking} from 'react-native';
 import {Card, Text} from 'react-native-paper';
 import { useRoute } from '@react-navigation/native';
-import { useSelector } from 'react-redux';
-import { RootState } from '../redux/store';
+import { useDispatch, useSelector } from 'react-redux';
+import { AppDispatch, RootState } from '../redux/store';
+import { haePeli } from '../redux/yksiPeliSlice';
 
  const YksiPeli : React.FC = () : React.ReactElement => {
 
-    const route = useRoute();
+    const peli : string = useSelector((state : RootState) => state.peli.peli);
 
-    const peliId : any = route.params;
+    let peliJson : any;
 
-    const yksiPeliId : any = Object.values(peliId)
+    let maalit : any[] = []
 
-    const pelit = useSelector((state : RootState) => state.pelit.pelit);
+    if(peli.length > 0) {
 
-    const maalit : any[] = [];
+       peliJson  = JSON.parse(peli);
 
-  if(pelit[yksiPeliId - 1].homeTeam.goals > 0) {
-
-    for(let i = 0; i < pelit[yksiPeliId - 1].homeTeam.goalEvents.length; i++) {
+      if(peliJson.game.homeTeam.goals > 0) {
     
-      maalit.push(pelit[yksiPeliId  - 1].homeTeam.goalEvents[i])
+        for(let i = 0; i < peliJson.game.homeTeam.goalEvents.length; i++) {
         
-    }
-
-  }
-
-  if(pelit[yksiPeliId - 1].awayTeam.goals > 0){
-
-    for(let i = 0; i < pelit[yksiPeliId - 1].awayTeam.goalEvents.length; i++) {
+          maalit.push(peliJson.game.homeTeam.goalEvents[i])
+            
+        }
     
-      maalit.push(pelit[yksiPeliId - 1].awayTeam.goalEvents[i])
-  
+      }
+    
+      if(peliJson.game.awayTeam.goals > 0){
+    
+        for(let i = 0; i < peliJson.game.awayTeam.goalEvents.length; i++) {
+        
+          maalit.push(peliJson.game.awayTeam.goalEvents[i])
+      
+        }
+    
+      }
+    
+      maalit.sort((a,b) => (a.gameTime > b.gameTime) ? 1 : - 1);
+    
+
     }
 
-  }
-
-  maalit.sort((a,b) => (a.gameTime > b.gameTime) ? 1 : - 1);
 
   return (
-  <>
-    <View style={styles.container}>
+    <>
+     {(peli.length > 0)
+    ?  <View style={styles.container}>
 
-      <Text
-        variant="headlineLarge"
-        style={{marginTop: 15}}
-      >
-        {pelit[yksiPeliId - 1].homeTeam.teamName}
-      </Text>
-
-      <Text
-         variant="headlineMedium"
-      >
-      {pelit[yksiPeliId - 1].homeTeam.goals}
-      </Text>
-
-      <Text
-        variant="headlineLarge"
-        style={{marginTop: 25}}
-      >
-        {pelit[yksiPeliId - 1].awayTeam.teamName}
-      </Text>
-
-      <Text
-        variant="headlineMedium"
-      >
-        {pelit[yksiPeliId - 1].awayTeam.goals}
+    <Text
+      variant="headlineLarge"
+      style={{marginTop: 15}}
+    >
+      {peliJson.game.homeTeam.teamName}
     </Text>
 
-      <Text
-        variant='headlineSmall'
-        style={{marginTop: 15}}
-      >
-        Katsojamäärä:  {pelit[yksiPeliId - 1].spectators}
-      </Text>
+    <Text
+      variant="headlineMedium"
+    >
+    {peliJson.game.homeTeam.goals}
+    </Text>
 
-      <Text
+    <Text
+      variant="headlineLarge"
+      style={{marginTop: 25}}
+    >
+      {peliJson.game.awayTeam.teamName}
+    </Text>
+
+    <Text
+      variant="headlineMedium"
+    >
+      {peliJson.game.awayTeam.goals}
+  </Text>
+
+    <Text
       variant='headlineSmall'
-        style={{marginTop: 15}}
-      >
-        Maalit:
-      </Text>
+      style={{marginTop: 15}}
+    >
+      Katsojamäärä:  {peliJson.game.spectators}
+    </Text>
 
-        <FlatList
-          data={maalit}
-          keyExtractor={(maali : any, index : number) => `${index}`}
-          renderItem={({item, index}) => {
+    <Text
+    variant='headlineSmall'
+      style={{marginTop: 15}}
+    >
+      Maalit:
+    </Text>
 
-            const KaikkiSekunnit : number = item.gameTime;
+      <FlatList
+        data={maalit}
+        keyExtractor={(maali : any, index : number) => `${index}`}
+        renderItem={({item, index}) => {
 
-            const minuutit : number = Math.floor(KaikkiSekunnit / 60);
+          const KaikkiSekunnit : number = item.gameTime;
 
-            const sekunnit : number = KaikkiSekunnit % 60
+          const minuutit : number = Math.floor(KaikkiSekunnit / 60);
 
-            function padTo2Digits(num: { toString: () => string; }) {
-              return num.toString().padStart(2, '0');
-            }
+          const sekunnit : number = KaikkiSekunnit % 60
 
-            const peliAika : string = `${padTo2Digits(minuutit)}:${padTo2Digits(sekunnit)}`;
-            
-            return(
+          function padTo2Digits(num: { toString: () => string; }) {
+            return num.toString().padStart(2, '0');
+          }
 
-              <ScrollView>
+          const peliAika : string = `${padTo2Digits(minuutit)}:${padTo2Digits(sekunnit)}`;
+          
+          return(
 
-                {(item.videoThumbnailUrl !== null)
+            <ScrollView>
 
-                  ?<Card
-                    onPress={() => Linking.openURL(`${item.videoClipUrl}`)}
-                  >
+              {(item.videoThumbnailUrl !== null)
 
-                    <Text
-                      style={{fontSize: 20, marginTop: 15}}
-                    >
-                      {item.homeTeamScore} {pelit[yksiPeliId - 1].homeTeam.teamName} - {item.awayTeamScore}  {pelit[yksiPeliId - 1].awayTeam.teamName}
-                    </Text>
-
-                    <Text
-                      style={{marginBottom: 5}}
-                    >
-                      Aika: {peliAika}
-                    </Text>
-                    
-                    <Image
-                    style={styles.stretch}
-                      source={{
-                        uri: `${item.videoThumbnailUrl}`,
-                      }}
-                  />
-
-                  </Card>
-
-                  :<Card>
+                ?<Card
+                  onPress={() => Linking.openURL(`${item.videoClipUrl}`)}
+                >
 
                   <Text
                     style={{fontSize: 20, marginTop: 15}}
                   >
-                    {item.homeTeamScore} {pelit[yksiPeliId - 1].homeTeam.teamName} - {item.awayTeamScore}  {pelit[yksiPeliId - 1].awayTeam.teamName}
+                    {item.homeTeamScore} {peliJson.game.homeTeam.teamName} - {item.awayTeamScore}  {peliJson.game.awayTeam.teamName}
                   </Text>
 
                   <Text
-                      style={{marginBottom: 5}}
+                    style={{marginBottom: 5}}
                   >
-                      Aika: {peliAika}
+                    Aika: {peliAika}
                   </Text>
                   
-                  <Text>
-                    Videota  ei saatavilla
-                  </Text>
+                  <Image
+                  style={styles.stretch}
+                    source={{
+                      uri: `${item.videoThumbnailUrl}`,
+                    }}
+                />
 
                 </Card>
 
-                }
+                :<Card>
 
-              </ScrollView>
+                <Text
+                  style={{fontSize: 20, marginTop: 15}}
+                >
+                  {item.homeTeamScore} {peliJson.game.homeTeam.teamName} - {item.awayTeamScore}  {peliJson.game.awayTeam.teamName}
+                </Text>
 
-            )
+                <Text
+                    style={{marginBottom: 5}}
+                >
+                    Aika: {peliAika}
+                </Text>
+                
+                <Text>
+                  Videota  ei saatavilla
+                </Text>
 
-          }}
-        />
+              </Card>
 
-    </View>
+              }
+
+            </ScrollView>
+
+          )
+
+        }}
+      />
+
+  </View>
+    : null
+    }
+     
 
     </>
 
