@@ -1,1 +1,1 @@
-# liigaApp
+Tulossovellus liigan otteluille
