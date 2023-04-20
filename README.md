@@ -1,1 +1,1 @@
-Tulossovellus liigan otteluille
+Tulossovellus liigan otteluille joka toteutettu React Native:lla
